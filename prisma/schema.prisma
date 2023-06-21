@@ -10,39 +10,40 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  name     String
-  email    String    @unique
-  password String
-  role     String    @default("STUDENT")
-  courses  Course[]
-  comments Comment[]
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  password      String
+  role          String    @default("STUDENT")
+  emailVerified Boolean   @default(false)
+  courses       Course[]
+  comments      Comment[]
 }
 
 model Course {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   title       String
   description String
   author      User     @relation(fields: [authorId], references: [id])
-  authorId    Int
+  authorId    String
   lessons     Lesson[]
 }
 
 model Lesson {
-  id       Int       @id @default(autoincrement())
+  id       String    @id @default(uuid())
   title    String
   content  String
   duration Int
   course   Course    @relation(fields: [courseId], references: [id])
-  courseId Int
+  courseId String
   comments Comment[]
 }
 
 model Comment {
-  id       Int    @id @default(autoincrement())
+  id       String @id @default(uuid())
   text     String
   author   User   @relation(fields: [authorId], references: [id])
-  authorId Int
+  authorId String
   lesson   Lesson @relation(fields: [lessonId], references: [id])
-  lessonId Int
+  lessonId String
 }
