@@ -1,0 +1,32 @@
+1 - Módulo de Autenticação:
+Responsável pelo registro, login e gerenciamento de usuários.
+Integração com provedores de autenticação externos, como Google, para facilitar o processo de login e segurança.
+
+2 - Módulo de Autorização:
+Gerencia as permissões e os papéis dos usuários (professor, admin, aluno).
+Define políticas de acesso para garantir que apenas usuários autorizados possam executar determinadas ações.
+
+3 - Módulo de Cursos:
+Permite a criação, leitura, atualização e exclusão de cursos.
+Gerencia as informações relacionadas aos cursos, como título, descrição, categoria, etc.
+
+4 - Módulo de Aulas:
+Permite a criação, leitura, atualização e exclusão de aulas.
+Relaciona as aulas aos cursos correspondentes.
+Gerencia as informações relacionadas às aulas, como título, conteúdo, duração, etc.
+
+5 - Módulo de Comentários:
+Permite que os usuários façam comentários nas aulas.
+Relaciona os comentários às aulas correspondentes.
+Gerencia as informações relacionadas aos comentários, como autor, texto, data, etc.
+
+6 - Módulo de Interação:
+Inclui recursos de interação, como curtidas, compartilhamentos, marcações favoritas, etc.
+Gerencia as interações dos usuários com os cursos e aulas.
+
+7 - Módulo de Administração:
+Fornece funcionalidades específicas para administradores, como gerenciamento de usuários, moderação de conteúdo, etc.
+
+8 - Módulo de Pesquisa:
+Permite que os usuários pesquisem cursos e aulas com base em critérios, como título, categoria, autor, etc.
+Implementa recursos de pesquisa avançada, como filtros e ordenação.
