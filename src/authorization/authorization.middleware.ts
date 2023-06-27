@@ -34,11 +34,15 @@ export class AuthorizationMiddleware implements NestMiddleware {
         path,
         request.method,
       );
-      if (!hasAuthorization) throw new UnauthorizedException();
+      if (!hasAuthorization) {
+        throw new UnauthorizedException('Invalid authorization');
+      }
+      next();
     } catch (error) {
-      throw new UnauthorizedException('Invalid token');
+      console.log(error.name);
+      throw new UnauthorizedException();
     }
-
-    next();
   }
+
+  // private refreshToken() {}
 }

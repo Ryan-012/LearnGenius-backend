@@ -20,8 +20,13 @@ export class AuthController {
     res.clearCookie('access_token').status(204).send();
   }
 
-  @Get('login')
-  login(@Body() credentialsDto: LoginDto) {
-    return this.authService.login(credentialsDto);
+  @Get('signIn')
+  signIn(@Body() credentialsDto: LoginDto) {
+    return this.authService.signIn(credentialsDto);
+  }
+
+  @Get('test')
+  test() {
+    return 'this is test';
   }
 }
