@@ -4,9 +4,19 @@ import { AuthorizationMiddleware } from './authorization/authorization.middlewar
 import { AuthorizationService } from './authorization/authorization.service';
 import { CourseModule } from './courses/courses.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthorizationModule } from './authorization/authorization.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [AuthModule, CourseModule, ConfigModule.forRoot()],
+  imports: [
+    AuthModule,
+    CourseModule,
+    AuthorizationModule,
+    JwtModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+  ],
   providers: [AuthorizationService],
 })
 export class AppModule implements NestModule {

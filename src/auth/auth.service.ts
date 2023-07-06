@@ -37,14 +37,17 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
 
     try {
-      return await this.jwtService.signAsync(
-        {
-          name: user.name,
-          sub: user.id,
-          role: user.role,
-        },
-        { secret: process.env.JWT_SECRET_KEY },
-      );
+      return {
+        token: await this.jwtService.signAsync(
+          {
+            name: user.name,
+            sub: user.id,
+            role: user.role,
+            exp: Math.floor(Date.now() / 1000) + 60,
+          },
+          { secret: process.env.JWT_SECRET_KEY },
+        ),
+      };
     } catch (error) {
       throw new InternalServerErrorException('Failed to sign the JWT token');
     }
