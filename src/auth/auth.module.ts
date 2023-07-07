@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { RegisterGuard } from './register.guard';
 import { JwtService, JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthorizationService } from 'src/authorization/authorization.service';
 
 @Module({
   imports: [
@@ -21,7 +22,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       isGlobal: true,
     }),
   ],
-  providers: [AuthService, PrismaService, RegisterGuard, JwtService],
+  providers: [
+    AuthService,
+    PrismaService,
+    RegisterGuard,
+    JwtService,
+    AuthorizationService,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}

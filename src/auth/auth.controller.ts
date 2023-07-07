@@ -24,18 +24,31 @@ export class AuthController {
   }
 
   @Post('logout')
-  logout(@Res() res: Response) {
-    res.clearCookie('access_token').status(204).send();
+  logout(@Res() response: Response) {
+    response.clearCookie('refreshToken');
+    response.clearCookie('access_token').status(204).send();
   }
 
   @Get('signIn')
-  signIn(
+  async signIn(
     @Body() credentialsDto: LoginDto,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) response: Response,
   ) {
-    res.cookie('access_token', 'test');
-    res.cookie('refresh_token', 'test2');
-    return this.authService.signIn(credentialsDto);
+    const { refresh_token, access_token } = await this.authService.signIn(
+      credentialsDto,
+    );
+
+    response.cookie('refresh_token', refresh_token, {
+      secure: true,
+      httpOnly: true,
+      maxAge: 3600000,
+    });
+    response.cookie('access_token', access_token, {
+      secure: true,
+      httpOnly: true,
+      maxAge: 60000,
+    });
+    return;
   }
 
   @Get('test')

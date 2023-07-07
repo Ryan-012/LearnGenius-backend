@@ -6,7 +6,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response, NextFunction } from 'express';
 import { AuthorizationService } from './authorization.service';
-import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class AuthorizationMiddleware implements NestMiddleware {
@@ -21,10 +20,10 @@ export class AuthorizationMiddleware implements NestMiddleware {
 
     const { refresh_token, access_token } = request.cookies;
 
-    if (!access_token)
-      throw new UnauthorizedException('Authentication token is required');
-
     try {
+      if (!access_token)
+        throw new UnauthorizedException('Inexistent access token');
+
       const decodedToken = await this.jwtService.verifyAsync(access_token, {
         secret: process.env.JWT_SECRET_KEY,
       });
@@ -34,25 +33,33 @@ export class AuthorizationMiddleware implements NestMiddleware {
         path,
         request.method,
       );
+
       if (!hasAuthorization) {
         throw new UnauthorizedException('Invalid authorization');
       }
+
       next();
     } catch (error) {
-      if (error.name === 'TokenExpiredError') {
+      if (
+        error.name === 'TokenExpiredError' ||
+        error.message === 'Inexistent access token'
+      ) {
         if (!refresh_token) throw new UnauthorizedException();
+
         const newAccessToken =
           await this.authService.generateAccessTokenFromRefreshToken(
             refresh_token,
           );
 
-        response.cookie('access_token', newAccessToken);
-        return next();
+        response.cookie('access_token', newAccessToken, {
+          secure: true,
+          httpOnly: true,
+          maxAge: 60000,
+        });
+        next();
       } else {
         throw new UnauthorizedException('Invalid authorization');
       }
     }
   }
-
-  // private refreshToken() {}
 }

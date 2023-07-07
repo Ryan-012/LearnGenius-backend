@@ -21,6 +21,8 @@ import { JwtModule } from '@nestjs/jwt';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthorizationMiddleware).forRoutes('courses');
+    consumer
+      .apply(AuthorizationMiddleware)
+      .forRoutes(...['courses', 'authorization']);
   }
 }

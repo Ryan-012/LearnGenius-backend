@@ -7,15 +7,20 @@ import {
 } from '@nestjs/common';
 import { ROLES_PERMISSIONS } from './roles-authorization.config';
 import { JwtService } from '@nestjs/jwt';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class AuthorizationService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly authService: AuthService,
+  ) {}
   hasAuthorization(
     userRole: string,
     resource: string,
     action: string,
   ): boolean {
+    if (resource === 'authorization') return true;
     const permissions = ROLES_PERMISSIONS[userRole];
     if (!permissions) {
       return false;
@@ -30,17 +35,15 @@ export class AuthorizationService {
   async generateAccessTokenFromRefreshToken(refreshToken: string) {
     try {
       const user = await this.verifyRefreshToken(refreshToken);
-      return {
-        token: await this.jwtService.signAsync(
-          {
-            name: user.name,
-            sub: user.sub,
-            role: user.role,
-            exp: Math.floor(Date.now() / 1000) + 60,
-          },
-          { secret: process.env.JWT_SECRET_KEY },
-        ),
-      };
+
+      const newAccessToken = await this.generateToken({
+        name: user.name,
+        sub: user.sub,
+        role: user.role,
+        exp: Math.floor(Date.now() / 1000) + 60,
+      });
+
+      return newAccessToken;
     } catch (error) {
       throw new InternalServerErrorException('Failed to sign the JWT token');
     }
@@ -60,6 +63,15 @@ export class AuthorizationService {
       };
     } catch (error) {
       throw new UnauthorizedException();
+    }
+  }
+  async generateToken(payload: any) {
+    try {
+      return await this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_SECRET_KEY,
+      });
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to sign the JWT token');
     }
   }
 }
