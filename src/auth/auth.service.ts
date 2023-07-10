@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   InternalServerErrorException,
+  ConflictException,
 } from '@nestjs/common';
 import * as bcryptjs from 'bcryptjs';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -18,7 +19,21 @@ export class AuthService {
     private readonly authorizationService: AuthorizationService,
   ) {}
 
-  register(userData: CreateUserDto) {
+  async register(userData: CreateUserDto) {
+    let user = this.prisma.user.findUnique({
+      where: {
+        email: userData.email,
+      },
+    });
+
+    if (user) throw new ConflictException('Email already exists');
+    user = await this.prisma.user.create({
+      data: {
+        userData,
+      },
+    });
+    try {
+    } catch (error) {}
     return 'this is a test registration!';
   }
 
@@ -39,20 +54,65 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
 
     try {
-      const access_token = await this.authorizationService.generateToken({
+      const access_token = await this.generateToken({
         name: user.name,
         sub: user.id,
         role: user.role,
         exp: Math.floor(Date.now() / 1000) + 60,
       });
 
-      const refresh_token = await this.authorizationService.generateToken({
+      const refresh_token = await this.generateToken({
         name: user.name,
         sub: user.id,
         role: user.role,
         exp: Math.floor(Date.now() / 1000) + 60 * 60,
       });
       return { access_token, refresh_token };
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to sign the JWT token');
+    }
+  }
+
+  async generateAccessTokenFromRefreshToken(refreshToken: string) {
+    if (!refreshToken) throw new UnauthorizedException();
+
+    try {
+      const user = await this.verifyRefreshToken(refreshToken);
+
+      const newAccessToken = await this.generateToken({
+        name: user.name,
+        sub: user.sub,
+        role: user.role,
+        exp: Math.floor(Date.now() / 1000) + 60,
+      });
+
+      return { newAccessToken };
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to sign the JWT token');
+    }
+  }
+
+  private async verifyRefreshToken(refreshToken: string) {
+    try {
+      const decodedToken = await this.jwtService.verifyAsync(refreshToken, {
+        secret: process.env.JWT_SECRET_KEY,
+      });
+
+      return {
+        name: decodedToken.name,
+        sub: decodedToken.sub,
+        role: decodedToken.role,
+        exp: Math.floor(Date.now() / 1000) + 60,
+      };
+    } catch (error) {
+      throw new UnauthorizedException();
+    }
+  }
+  async generateToken(payload: any) {
+    try {
+      return await this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_SECRET_KEY,
+      });
     } catch (error) {
       throw new InternalServerErrorException('Failed to sign the JWT token');
     }

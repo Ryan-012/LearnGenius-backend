@@ -13,6 +13,8 @@ export class RegisterGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
+    if (!request.body.role || request.body.role === 'STUDENT') return true;
+
     const authToken = request.headers['authorization'];
 
     if (!authToken)

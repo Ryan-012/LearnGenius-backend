@@ -12,19 +12,16 @@ export class AuthorizationMiddleware implements NestMiddleware {
   constructor(
     private jwtService: JwtService,
     private authorizationService: AuthorizationService,
-    private authService: AuthorizationService,
   ) {}
 
   async use(request: Request, response: Response, next: NextFunction) {
     const path = request.baseUrl.split('/')[1];
-
-    const { refresh_token, access_token } = request.cookies;
-
+    const authToken = request.headers['authorization'];
     try {
-      if (!access_token)
+      if (!authToken)
         throw new UnauthorizedException('Inexistent access token');
 
-      const decodedToken = await this.jwtService.verifyAsync(access_token, {
+      const decodedToken = await this.jwtService.verifyAsync(authToken, {
         secret: process.env.JWT_SECRET_KEY,
       });
 
@@ -40,26 +37,7 @@ export class AuthorizationMiddleware implements NestMiddleware {
 
       next();
     } catch (error) {
-      if (
-        error.name === 'TokenExpiredError' ||
-        error.message === 'Inexistent access token'
-      ) {
-        if (!refresh_token) throw new UnauthorizedException();
-
-        const newAccessToken =
-          await this.authService.generateAccessTokenFromRefreshToken(
-            refresh_token,
-          );
-
-        response.cookie('access_token', newAccessToken, {
-          secure: true,
-          httpOnly: true,
-          maxAge: 60000,
-        });
-        next();
-      } else {
-        throw new UnauthorizedException('Invalid authorization');
-      }
+      throw new UnauthorizedException('Invalid authorization');
     }
   }
 }

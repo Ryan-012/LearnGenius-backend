@@ -30,30 +30,14 @@ export class AuthController {
   }
 
   @Get('signIn')
-  async signIn(
-    @Body() credentialsDto: LoginDto,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    const { refresh_token, access_token } = await this.authService.signIn(
-      credentialsDto,
-    );
-
-    response.cookie('refresh_token', refresh_token, {
-      secure: true,
-      httpOnly: true,
-      maxAge: 3600000,
-    });
-    response.cookie('access_token', access_token, {
-      secure: true,
-      httpOnly: true,
-      maxAge: 60000,
-    });
-    return;
+  async signIn(@Body() credentialsDto: LoginDto) {
+    return await this.authService.signIn(credentialsDto);
   }
 
-  @Get('test')
-  test(@Req() req: Request) {
-    console.log(req.cookies['access_token']);
-    return 'this is test';
+  @Get('refresh-token')
+  async test(@Body('refreshToken') refreshToken: string) {
+    return await this.authService.generateAccessTokenFromRefreshToken(
+      refreshToken,
+    );
   }
 }
