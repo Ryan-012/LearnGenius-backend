@@ -20,21 +20,41 @@ export class AuthService {
   ) {}
 
   async register(userData: CreateUserDto) {
-    let user = this.prisma.user.findUnique({
+    let user = await this.prisma.user.findUnique({
       where: {
         email: userData.email,
       },
     });
 
     if (user) throw new ConflictException('Email already exists');
-    user = await this.prisma.user.create({
-      data: {
-        userData,
-      },
-    });
+
+    userData.password = bcryptjs.hashSync(userData.password, 10);
+    console.log(userData.password);
+
     try {
-    } catch (error) {}
-    return 'this is a test registration!';
+      user = await this.prisma.user.create({
+        data: {
+          ...userData,
+        },
+      });
+
+      const access_token = await this.generateToken({
+        name: user.name,
+        sub: user.id,
+        role: user.role,
+        exp: Math.floor(Date.now() / 1000) + 60,
+      });
+
+      const refresh_token = await this.generateToken({
+        name: user.name,
+        sub: user.id,
+        role: user.role,
+        exp: Math.floor(Date.now() / 1000) + 60 * 60,
+      });
+      return { access_token, refresh_token };
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to create user');
+    }
   }
 
   async signIn(credentials: LoginDto): Promise<any> {

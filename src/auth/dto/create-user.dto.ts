@@ -9,6 +9,7 @@ import {
 
 export class CreateUserDto {
   @IsString()
+  @IsNotEmpty()
   name: string;
 
   @IsNotEmpty()
@@ -21,6 +22,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsBoolean()
+  @IsOptional()
   emailVerified: boolean;
 
   @IsNotEmpty()

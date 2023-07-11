@@ -15,7 +15,7 @@ model User {
   name          String
   email         String    @unique
   password      String
-  role          String    @default("STUDENT")
+  role          String    @default("STUDENT") // STUDENT|ADMIN|TEACHER
   emailVerified Boolean   @default(false)
   courses       Course[]
   comments      Comment[]
@@ -37,6 +37,7 @@ model Lesson {
   duration Int
   course   Course    @relation(fields: [courseId], references: [id])
   courseId String
+  type     String    @default("TEXT") // TEXT|VIDEO|IMAGE
   comments Comment[]
 }
 

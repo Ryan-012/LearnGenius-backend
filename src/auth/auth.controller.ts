@@ -18,15 +18,9 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @UseGuards(RegisterGuard)
-  @Post('register')
+  @Post('signUp')
   register(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);
-  }
-
-  @Post('logout')
-  logout(@Res() response: Response) {
-    response.clearCookie('refreshToken');
-    response.clearCookie('access_token').status(204).send();
   }
 
   @Get('signIn')
