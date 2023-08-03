@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Req,
   Res,
@@ -12,6 +13,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { RegisterGuard } from './register.guard';
 import { LoginDto } from './dto/login.dto';
+import { signInGoogleDTO } from './dto/sign-in-gooogle.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -26,6 +28,11 @@ export class AuthController {
   @Get('signIn')
   async signIn(@Body() credentialsDto: LoginDto) {
     return await this.authService.signIn(credentialsDto);
+  }
+
+  @Get('sign-in-google')
+  async signInGoogle(@Body() SignInGoogleDto: signInGoogleDTO) {
+    return await this.authService.signInGoogle(SignInGoogleDto);
   }
 
   @Get('refresh-token')
