@@ -11,8 +11,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { AuthorizationService } from 'src/authorization/authorization.service';
-import { signInGoogleDTO } from './dto/sign-in-gooogle.dto';
-import console from 'console';
+import { SignInGoogleDto } from './dto/sign-in-gooogle.dto';
 
 @Injectable()
 export class AuthService {
@@ -96,9 +95,9 @@ export class AuthService {
     }
   }
 
-  async signInGoogle(googleData: signInGoogleDTO) {
+  async signInGoogle(googleData: SignInGoogleDto) {
     const { email } = googleData;
-    console.log(email);
+
     const user = await this.prisma.user.findUnique({
       where: {
         email,

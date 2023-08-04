@@ -8,12 +8,12 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Response, Request } from 'express';
+// import { Response, Request } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { RegisterGuard } from './register.guard';
 import { LoginDto } from './dto/login.dto';
-import { signInGoogleDTO } from './dto/sign-in-gooogle.dto';
+import { SignInGoogleDto } from './dto/sign-in-gooogle.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -30,13 +30,13 @@ export class AuthController {
     return await this.authService.signIn(credentialsDto);
   }
 
-  @Get('sign-in-google')
-  async signInGoogle(@Body() SignInGoogleDto: signInGoogleDTO) {
-    return await this.authService.signInGoogle(SignInGoogleDto);
+  @Post('sign-in-google/')
+  async signInGoogle(@Body() signInGoogleDto: SignInGoogleDto) {
+    return await this.authService.signInGoogle(signInGoogleDto);
   }
 
-  @Get('refresh-token')
-  async test(@Body('refreshToken') refreshToken: string) {
+  @Get('refresh-token/:token')
+  async test(@Param('token') refreshToken: string) {
     return await this.authService.generateAccessTokenFromRefreshToken(
       refreshToken,
     );
