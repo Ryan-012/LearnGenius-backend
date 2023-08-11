@@ -20,7 +20,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @UseGuards(RegisterGuard)
-  @Post('signUp')
+  @Post('sign-up')
   register(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);
   }
