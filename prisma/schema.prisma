@@ -22,19 +22,22 @@ model User {
 }
 
 model Course {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  author      User     @relation(fields: [authorId], references: [id])
-  authorId    String
-  lessons     Lesson[]
+  id              String   @id @default(uuid())
+  title           String
+  description     String
+  author          User     @relation(fields: [authorId], references: [id])
+  authorId        String
+  level           String // BEGINNER|INTERMEDIATE|ADVANCED
+  price           Int      @default(0)
+  numberOfLessons Int      @default(0)
+  lessons         Lesson[]
 }
 
 model Lesson {
   id       String    @id @default(uuid())
   title    String
   content  String
-  duration Int
+  duration Int       @default(0)
   course   Course    @relation(fields: [courseId], references: [id])
   courseId String
   type     String    @default("TEXT") // TEXT|VIDEO|IMAGE

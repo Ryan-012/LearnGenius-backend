@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 // import { Response, Request } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthService } from './auth.service';
@@ -30,7 +21,7 @@ export class AuthController {
     return await this.authService.signIn(credentialsDto);
   }
 
-  @Post('sign-in-google/')
+  @Post('sign-in-google')
   async signInGoogle(@Body() signInGoogleDto: SignInGoogleDto) {
     return await this.authService.signInGoogle(signInGoogleDto);
   }

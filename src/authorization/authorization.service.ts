@@ -1,10 +1,6 @@
 // permissions.service.ts
 
-import {
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ROLES_PERMISSIONS } from './roles-authorization.config';
 import { JwtService } from '@nestjs/jwt';
 // import { AuthService } from 'src/auth/auth.service';

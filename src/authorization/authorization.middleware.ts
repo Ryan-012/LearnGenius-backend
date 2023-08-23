@@ -21,7 +21,9 @@ export class AuthorizationMiddleware implements NestMiddleware {
       if (!authToken)
         throw new UnauthorizedException('Inexistent access token');
 
-      const decodedToken = await this.jwtService.verifyAsync(authToken, {
+      const extractedToken = authToken.split(' ')[1];
+
+      const decodedToken = await this.jwtService.verifyAsync(extractedToken, {
         secret: process.env.JWT_SECRET_KEY,
       });
 
