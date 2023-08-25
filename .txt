@@ -30,3 +30,6 @@ Fornece funcionalidades específicas para administradores, como gerenciamento de
 8 - Módulo de Pesquisa:
 Permite que os usuários pesquisem cursos e aulas com base em critérios, como título, categoria, autor, etc.
 Implementa recursos de pesquisa avançada, como filtros e ordenação.
+
+
+

@@ -30,6 +30,7 @@ model Course {
   level           String // BEGINNER|INTERMEDIATE|ADVANCED
   price           Int      @default(0)
   numberOfLessons Int      @default(0)
+  views           Int      @default(0)
   lessons         Lesson[]
 }
 
@@ -40,7 +41,7 @@ model Lesson {
   duration Int       @default(0)
   course   Course    @relation(fields: [courseId], references: [id])
   courseId String
-  type     String    @default("TEXT") // TEXT|VIDEO|IMAGE
+  type     String    @default("TEXT") // TEXT|VIDEO|FILE
   comments Comment[]
 }
 

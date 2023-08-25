@@ -4,15 +4,24 @@ export class createCourseDTO {
   @IsString()
   @IsNotEmpty()
   title: string;
+
+  @IsString()
+  @IsNotEmpty()
   description: string;
+
+  @IsString()
+  @IsNotEmpty()
   authorId: string;
 
-  @IsIn(['BEGINNER', 'INTERMEDIATE', 'ADVANCED'])
+  @IsIn(['Iniciante', 'Intermediário', 'Avançado'])
   @IsOptional()
   level: string;
 
   @IsOptional()
   @IsInt()
   price: number;
+
+  @IsOptional()
+  @IsInt()
   numberOfLessons: number;
 }
